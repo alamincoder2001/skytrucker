@@ -27,6 +27,24 @@
                     Data List
                 </a>
                 @endif
+                @if(in_array('reports.areawise datalist', $access))
+                <a class="nav-link" href="{{ route('data.areawisedataList') }}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                    Area Wise Data
+                </a>
+                @endif
+                @if(in_array('reports.leaderwise datalist', $access))
+                <a class="nav-link" href="{{ route('data.teamleaderwisedataList') }}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                    Team-Leader Wise Data
+                </a>
+                @endif
+                @if(in_array('reports.bpwise datalist', $access))
+                <a class="nav-link" href="{{ route('data.bpwisedataList') }}">
+                    <div class="sb-nav-link-icon"><i class="fas fa-list-alt"></i></div>
+                    BP Wise Data
+                </a>
+                @endif
                 @if(in_array('activities.picture entry', $access))
                 <a class="nav-link" href="{{ route('take.picture') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-camera"></i></div>
