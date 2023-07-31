@@ -76,7 +76,9 @@ class DataEntryExport implements FromQuery, WithHeadings, WithMapping
         if ($this->areaId != 0) {
             return DataEntry::query()->where('area_id', $this->areaId)->whereBetween(DB::raw('DATE(created_at)'), array($this->dateFrom, $this->dateTo));
         } else if ($this->leaderId != 0) {
-            return DataEntry::query()->where('added_by', $this->leaderId)->whereBetween(DB::raw('DATE(created_at)'), array($this->dateFrom, $this->dateTo));
+            return DataEntry::query()->whereHas('user', function($q) {
+                $q->where('team_leader_id', $this->leaderId);
+            })->whereBetween(DB::raw('DATE(created_at)'), array($this->dateFrom, $this->dateTo));
         } else if ($this->bpId != 0) {
             return DataEntry::query()->where('added_by', $this->bpId)->whereBetween(DB::raw('DATE(created_at)'), array($this->dateFrom, $this->dateTo));
         } else {
