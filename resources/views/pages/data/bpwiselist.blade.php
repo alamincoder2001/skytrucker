@@ -1,45 +1,19 @@
 @extends('layouts.master')
-@section('title', 'Data List')
+@section('title', 'BP Wise Data List')
 @section('main-content')  
 <main>
     <div class="container-fluid" id="dataLists">
         <div class="heading-title p-2 my-2">
-            <span class="my-3 heading "><i class="fas fa-tachometer-alt"></i> <a class="" href="{{ route('dashboard') }}">Dashboard</a> > Data List</span>
+            <span class="my-3 heading "><i class="fas fa-tachometer-alt"></i> <a class="" href="{{ route('dashboard') }}">Dashboard</a> > BP Wise Data List</span>
         </div>
         <div class="row">
             <div class="card my-2">
                 <div class="card-body table-card-body pt-3">
                     <form  @@submit.prevent="getDataLists">
                         <div class="row">
-                            <div class="col-lg-3 col-md-4 col-6">
-                                <div class="form-group row">
-                                    <label for="type" class="col-sm-4 col-form-label">Search Type</label>
-                                    <div class="col-sm-8">
-                                        <select v-model="type" id="type" class="form-select form-control mb-0 shadow-none" @@change="onChangeSearchType">
-                                            <option value="">All</option>
-                                            <option value="area">By Area</option>
-                                            <option value="team_leader">Team Leader</option>
-                                            <option value="bp">By BP</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-lg-2 col-md-4 col-6 px-0" style="display: none;" :style="{ display: type == 'team_leader' ? '' : 'none' }">
-                                <div class="form-group row mb-0">
-                                    <v-select v-bind:options="leaders" v-model="leader" label="name"></v-select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-4 col-6 px-0" style="display: none;" :style="{ display: type == 'bp' ? '' : 'none' }">
+                            <div class="col-lg-3 col-md-4 col-6 pe-0">
                                 <div class="form-group row mb-0">
                                     <v-select v-bind:options="users" v-model="added" label="name"></v-select>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-2 col-md-4 col-6" style="display: none;" :style="{ display: type == 'area' ? '' : 'none' }">
-                                <div class="form-group row mb-0">
-                                    <v-select v-bind:options="areas" v-model="area" label="name"></v-select>
                                 </div>
                             </div>
 
@@ -75,7 +49,7 @@
                         <i class="fas fa-table me-1"></i> Users List
                     </div>
                     <div class="float-right">
-                        <a :href="`/data/export/${dateFrom}/${dateTo}/${type=='area'? area.id : 0}/${type=='team_leader'? leader.id : 0}/${type=='bp'? added.id : 0}`" class="btn btn-excel shadow-none"><i class="fa fa-download"></i> Excel Export</a>
+                    <a :href="`/data/export/${dateFrom}/${dateTo}/0/0/${added.id != null ? added.id : 0}`" class="btn btn-excel shadow-none"><i class="fa fa-download"></i> Excel Export</a>
                         <button type="button" class="btn btn-print shadow-none" @@click.prevent="print"><i class="fa fa-print"></i> Print</button>
                     </div>
                 </div>
@@ -101,7 +75,6 @@
                                     <th>Voice(Amount)</th>
                                     <th>Area</th>
                                     <th>Location</th>
-                                    {{-- <th>Image</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -139,19 +112,8 @@
                                         <span class="badge bg-danger" v-else>No</span>
                                     </td>
                                     <td>@{{ item.voice_amount ?? '--' }}</td>
-                                    {{-- <td>
-                                        <span class="badge bg-success" v-if="item.gift == 'yes'">Yes</span>
-                                        <span class="badge bg-danger" v-else>No</span>
-                                    </td>
-                                    <td>@{{ item.gift_name ?? '--' }}</td> --}}
                                     <td>@{{ item.area.name }}</td>
                                     <td>@{{ item.location ?? '--'}}</td>
-                                    {{-- <td>
-                                        <img v-if="item.image == null || item.image == ''" src="{{ asset('images/no-profile.png') }}" style="height: 40px; width:40px;" alt="">
-                                        <a v-else @@click="imageView(item.image)" type="button" data-bs-toggle="modal" data-bs-target="#imgViewModal" alt="">
-                                            <img :src="baseUrl+item.image" style="height: 40px; width:40px;">
-                                        </a>
-                                    </td> --}}
                                 </tr>
                             </tbody>
                         </table>
@@ -159,19 +121,6 @@
                 </div>
             </div> 
         </div>
-        <!-- Image View Modal -->
-        {{-- <div class="modal fade" id="imgViewModal" tabindex="-1" aria-labelledby="imgViewModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <img style="width: 100%; height: 450px;" :src="imgViewUrl" alt="">
-                    </div>
-                    <div class="modal-footer py-1">
-                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
     </div>
 </main>
 @endsection
@@ -186,7 +135,6 @@
                 return {
                     dateFrom: moment().format("YYYY-MM-DD"),
                     dateTo: moment().format("YYYY-MM-DD"),
-                    type: '',
                     dataLists: [],
 
                     users: [],
@@ -195,27 +143,14 @@
                         name: 'Select BP'
                     },
 
-                    leaders: [],
-                    leader: {
-                        id: null,
-                        name: 'Select Team Leader'
-                    },
-
-                    areas: [],
-                    area: {
-                        id: null,
-                        name: 'select area'
-                    },
-
                     baseUrl: "{{ asset('') }}",
                     imgViewUrl: ''
 
                 }
             },
 
-            created() {
-                this.getUsers();
-                this.getAreas();
+            async created() {
+                await this.getUsers();
             },
 
             methods: {
@@ -224,58 +159,13 @@
                     .then(res => {
                         let r = res.data;
                         this.users = r.users.filter(item => item.type == 'bp');
-                        this.leaders = r.users.filter(item => item.type == 'team_leader');
                     })
-                }, 
-
-                getAreas() {
-                    axios.get('/get_areas')
-                    .then(res => {
-                        let r = res.data;
-                        this.areas = r.areas;
-                    })
-                },
-
-                onChangeSearchType() {
-                    if(this.type == 'bp') {
-                        this.area.id = null;
-                        this.leader.id = null;
-
-                    } else if(this.type == 'team_leader') {
-                        this.area.id = '';
-                        this.added.id = null;
-
-                    } else if(this.type == 'area') {
-                        this.leader.id = null;
-                        this.added.id = null;
-
-                    } else {
-                        this.area.id = null;
-                        this.leader.id = null;
-                        this.added.id = null;
-                    }
                 },
 
                 async getDataLists() {
-                    if(this.type == 'added_by' && (this.added.id == null || this.added.id == '')) {
-                        $.notify('Please select a user!', "error");
-                        return;
-                    }
-
-                    if(this.type == 'team_leader' && (this.leader.id == null || this.leader.id == '')) {
-                        $.notify('Please select team leader!', "error");
-                        return;
-                    }
-
-                    if(this.type == 'area' && (this.area.id == null || this.area.id == '')) {
-                        $.notify('Please select area!', "error");
-                        return;
-                    }
 
                     let filter = {
-                        leaderId: this.leader.id != null || this.leader.id != '' ? this.leader.id : '',
                         bpId: this.added.id != null || this.added.id != '' ? this.added.id : '',
-                        areaId: this.area.id != null || this.area.id != '' ? this.area.id : '',
                         dateFrom: this.dateFrom,
                         dateTo: this.dateTo,
                     }

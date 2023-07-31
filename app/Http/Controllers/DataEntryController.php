@@ -8,7 +8,6 @@ use App\Models\DataEntry;
 use Illuminate\Http\Request;
 use App\Exports\DataEntryExport;
 use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 
 class DataEntryController extends Controller
@@ -127,6 +126,21 @@ class DataEntryController extends Controller
         return view('pages.data.list');
     }
 
+    public function areawiseDataList() 
+    {
+        return view('pages.data.areawiselist');
+    }
+
+    public function teamleaderwisedataList() 
+    {
+        return view('pages.data.teamleaderwiselist');
+    }
+
+    public function bpwisedataList() 
+    {
+        return view('pages.data.bpwiselist');
+    }
+
     public function getDataList(Request $request)
     {
         $dateForm = $request->dateFrom;
@@ -161,9 +175,10 @@ class DataEntryController extends Controller
         return response()->json(['dataLists' => $dataLists], 200);
     }
 
-    public function dataExport() 
+    public function dataExport($dateForm, $dateTo, $areaId=0, $leaderId=0, $bpId=0) 
     {
-        return Excel::download(new DataEntryExport, 'data.xlsx');
+        $filename = $dateForm.'-'.$dateTo.'-'.time().'-datalist.xlsx';
+        return (new DataEntryExport)->dataclause($dateForm, $dateTo, $areaId, $leaderId, $bpId)->download($filename);
     }
 
     public function takePicture() 

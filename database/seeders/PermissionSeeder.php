@@ -32,6 +32,11 @@ class PermissionSeeder extends Seeder
             'administration'        => [
                 'user register'     => 'user register',
                 'user list'         => 'user list',
+            ],
+            'reports'        => [
+                'areawise datalist'   => 'areawise datalist',
+                'leaderwise datalist' => 'leaderwise datalist',
+                'bpwise datalist'     => 'bpwise datalist',
             ]
 
         ];

@@ -50,7 +50,12 @@ Route::group(['middleware' => 'auth'], function() {
     Route::get('/data/list', [DataEntryController::class, 'dataList'])->name('data.list');
     Route::post('/data_list', [DataEntryController::class, 'getDataList']);
     Route::post('/phone_verify_process', [DataEntryController::class, 'phoneVerifyProcess']);
-    Route::get('/data/export', [DataEntryController::class, 'dataExport'])->name('data.export');
+    Route::get('/data/export/{dateFrom}/{dateTo}/{areaId?}/{leaderId?}/{bpId?}', [DataEntryController::class, 'dataExport'])->name('data.export');
+
+    // reports
+    Route::get('/data/areawise-datalist', [DataEntryController::class, 'areawiseDataList'])->name('data.areawisedataList');
+    Route::get('/data/teamleaderwise-datalist', [DataEntryController::class, 'teamleaderwisedataList'])->name('data.teamleaderwisedataList');
+    Route::get('/data/bpwise-datalist', [DataEntryController::class, 'bpwisedataList'])->name('data.bpwisedataList');
     
     // Take picture route
     Route::get('/take/picture', [DataEntryController::class, 'takePicture'])->name('take.picture');
