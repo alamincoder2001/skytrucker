@@ -144,7 +144,7 @@
                                         <span class="badge bg-danger" v-else>No</span>
                                     </td>
                                     <td>@{{ item.gift_name ?? '--' }}</td> --}}
-                                    <td>@{{ item.area.name }}</td>
+                                    <td>@{{ item.area == null ? 'n/a':item.area.name }}</td>
                                     <td>@{{ item.location ?? '--'}}</td>
                                     {{-- <td>
                                         <img v-if="item.image == null || item.image == ''" src="{{ asset('images/no-profile.png') }}" style="height: 40px; width:40px;" alt="">

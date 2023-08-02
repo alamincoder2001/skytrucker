@@ -47,19 +47,14 @@ class DataEntryExport implements FromQuery, WithHeadings, WithMapping
             $data_entry->recharge_amount,
             $data_entry->voice,
             $data_entry->voice_amount,
-            $data_entry->area->name,
-            $data_entry->location,
+            $data_entry->area == null ? 'n/a':$data_entry->area->name,
             $data_entry->program,
             $data_entry->experience,
             $data_entry->app_experience,
             $data_entry->gaming,
-            $data_entry->event,
             $data_entry->service,
             $data_entry->future,
-            $data_entry->status,
-            $data_entry->ip_address,
-            $data_entry->otp,
-            $data_entry->user->name,
+            $data_entry->user == null ? 'n/a':$data_entry->user->name,
             $data_entry->updated_by,
             $data_entry->created_at,
             $data_entry->updated_at,
@@ -68,7 +63,7 @@ class DataEntryExport implements FromQuery, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ["id", "Name", "Mobile", "New Sim", "New Sim Gift", "App Install", "App Install Gift", "Toffee", "Toffee Gift", "Sell Package", "Sell gb", "Recharge Package", "Recharge Amount", "Voice", "Voice Amount", "Area Name", "Location", "Program", "Experience", "App Experience", "Gaming", "Event", "Service", "Future", "Status", "ip_address", "otp", "added_by", "update_by", "created_at", "updated_at"];
+        return ["id", "Name", "Mobile", "New Sim", "New Sim Gift", "App Install", "App Install Gift", "Toffee", "Toffee Gift", "Sell Package", "Sell gb", "Recharge Package", "Recharge Amount", "Voice", "Voice Amount", "Area Name", "BL Program", "BL Experience", "BL App Experience", "BL Gaming",  "Service", "Future", "added_by", "update_by", "created_at", "updated_at"];
     }
 
     public function query()

@@ -112,7 +112,7 @@
                                         <span class="badge bg-danger" v-else>No</span>
                                     </td>
                                     <td>@{{ item.voice_amount ?? '--' }}</td>
-                                    <td>@{{ item.area.name }}</td>
+                                    <td>@{{ item.area == null ? 'n/a':item.area.name }}</td>
                                     <td>@{{ item.location ?? '--'}}</td>
                                 </tr>
                             </tbody>

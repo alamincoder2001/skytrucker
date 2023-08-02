@@ -146,7 +146,7 @@ class DataEntryController extends Controller
         $dateForm = $request->dateFrom;
         $dateTo = $request->dateTo;
 
-        $dataLists = DataEntry::where('status', 'a')->with('area:id,name');
+        $dataLists = DataEntry::where('status', 'a')->with('area');
 
         if(Auth::user()->type == 'bp') {
             $dataLists = $dataLists->where('added_by', Auth::user()->id);
