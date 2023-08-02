@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Sky Tracker | @yield('title')</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.png') }}">
     <link rel="stylesheet" href="https://unpkg.com/vue-select@3.0.0/dist/vue-select.css">
@@ -23,7 +24,7 @@
             box-shadow: 0 0 20px rgb(0 0 0 / 15%);
             border-top: 8px solid rgb(28, 141, 255);
         }
-        
+
         .dashboard-card-topper .card-body {
             padding: 0.5rem !important;
         }
@@ -81,7 +82,14 @@
             var currentTimeString = currentHours + ":" + currentMinutes + ":" + currentSeconds + " " + timeOfDay;
             document.getElementById("timer").innerHTML = currentTimeString;
         }, 1000);
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
     </script>
+
     @stack('script')
 </body>
 

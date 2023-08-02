@@ -63,7 +63,7 @@ class DataEntryExport implements FromQuery, WithHeadings, WithMapping
 
     public function headings(): array
     {
-        return ["id", "Name", "Mobile", "New Sim", "New Sim Gift", "App Install", "App Install Gift", "Toffee", "Toffee Gift", "Sell Package", "Sell gb", "Recharge Package", "Recharge Amount", "Voice", "Voice Amount", "Area Name", "BL Program", "BL Experience", "BL App Experience", "BL Gaming",  "Service", "Future", "added_by", "update_by", "created_at", "updated_at"];
+        return ["Id", "Name", "Mobile", "New Sim", "New Sim Gift", "App Install", "App Install Gift", "Toffee", "Toffee Gift", "Sell Package", "Sell gb", "Recharge Package", "Recharge Amount", "Voice", "Voice Amount", "Area Name", "About The Program", "BL Experience", "BL App Experience", "BL Gaming",  "Service", "Future", "added_by", "update_by", "created_at", "updated_at"];
     }
 
     public function query()

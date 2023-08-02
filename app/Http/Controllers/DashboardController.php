@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DataEntry;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        $today = date('Y-m-d');
-        $todayDataList = DB::select("SELECT de.* FROM data_entries de WHERE de.deleted_at IS NULL AND date(de.created_at) = '$today'");
-        $monthDataList = DB::select("SELECT de.* FROM data_entries de WHERE de.deleted_at IS NULL AND MONTH(de.created_at) = MONTH(now())");
-        $yearDataList = DB::select("SELECT de.* FROM data_entries de WHERE de.deleted_at IS NULL AND YEAR(de.created_at) = YEAR(now())");
-        return view('pages.index', compact('todayDataList', 'monthDataList', 'yearDataList'));
+        $newsim = DataEntry::where('new_sim', 'yes')->get()->count();
+        $appinstall = DataEntry::where('app_install', 'yes')->get()->count();
+        $toffeegift = DataEntry::where('toffee_gift', 'yes')->get()->count();
+        $rechareamount = DataEntry::where('recharge_package', 'yes')->sum('recharge_amount');
+        $voiceamount = DataEntry::where('voice', 'yes')->sum('voice_amount');
+
+        return view('pages.index', compact('newsim', 'appinstall', 'toffeegift', 'rechareamount', 'voiceamount'));
     }
 
     public function table()

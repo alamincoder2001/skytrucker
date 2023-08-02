@@ -144,7 +144,7 @@
                                     <div class="form-group row" style="display: none;" :style="{ display: data.voice == 'yes' ? '' : 'none' }">
                                         <label class="col-md-4 col-5" for="voice_amount">Voice (Amount)</label>
                                         <div class="col-md-8 col-7">
-                                            <input type="text" v-model="data.voice_amount" class="form-control" id="voice_amount"  placeholder="Amount">
+                                            <input type="number" step="0.01" min="0" v-model="data.voice_amount" class="form-control" id="voice_amount"  placeholder="Amount">
                                         </div>
                                     </div>
 
@@ -240,12 +240,12 @@
                                             </label>
                                         </div>
                                     </div>
-                                    <div class="form-group row pb-1">
+                                    <!-- <div class="form-group row pb-1">
                                         <label class="col-md-12 col-12 pb-1" for="event"><i class="fas fa-dot-circle"></i> What do you think, what other features can be added to this type of event?</label>
                                         <div class="col-md-12 col-12">
                                             <textarea class="form-control" v-model="data.event" id="event" cols="30" rows="2"></textarea>
                                         </div>
-                                    </div>
+                                    </div> -->
                                     <div class="form-group row pb-1">
                                         <label class="col-md-12 col-12 pb-1" for="service"><i class="fas fa-dot-circle"></i> Are you satisfied with Banglalink’s overall service?</label>
                                         <div class="col-md-12 col-12" style="padding-left: 30px;">
