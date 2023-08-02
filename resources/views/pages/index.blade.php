@@ -20,82 +20,76 @@
             <div class="row">
                 <div class="col-xl-3 col-md-6">
                     <div class="card mb-2 dashboard-card-topper">
-                        <a href="">
-                            <div class="card-body mx-auto text-center">
-                                <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
-                                <div class="d-flex justify-content-center align-items-center">
-                                    <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
-                                    <span class="newsim">
-                                        {{$newsim}}
-                                    </span>
-                                </div>
-                                <p class="dashboard-card-topper-text text-center">New Sim</p>
+                        <div class="card-body mx-auto text-center">
+                            <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
+                                <span class="newsim">
+                                    {{$newsim}}
+                                </span>
                             </div>
-                        </a>
+                            <p class="dashboard-card-topper-text text-center">New Sim</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xl-2 col-md-6">
                     <div class="card mb-2 dashboard-card-topper">
-                        <a href="">
-                            <div class="card-body mx-auto text-center">
-                                <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
-                                <div class=" d-flex justify-content-center align-items-center">
-                                    <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
-                                    <span class="appinstall">
-                                        {{$appinstall}}
-                                    </span>
-                                </div>
-                                <p class="dashboard-card-topper-text text-center">App Install</p>
+                        <div class="card-body mx-auto text-center">
+                            <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
+                                <span class="appinstall">
+                                    {{$appinstall}}
+                                </span>
                             </div>
-                        </a>
+                            <p class="dashboard-card-topper-text text-center">App Install</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xl-2 col-md-6">
                     <div class="card mb-2 dashboard-card-topper">
-                        <a href="">
-                            <div class="card-body mx-auto text-center">
-                                <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
-                                <div class=" d-flex justify-content-center align-items-center">
-                                    <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
-                                    <span class="toffeegift">
-                                        {{$toffeegift}}
-                                    </span>
-                                </div>
-                                <p class="dashboard-card-topper-text text-center">Toffee Gift</p>
+                        <div class="card-body mx-auto text-center">
+                            <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
+                                <span class="toffeegift">
+                                    {{$toffeegift}}
+                                </span>
                             </div>
-                        </a>
+                            <p class="dashboard-card-topper-text text-center">Toffee Gift</p>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xl-2 col-md-6">
                     <div class="card mb-2 dashboard-card-topper">
-                        <a href="">
-                            <div class="card-body mx-auto text-center">
-                                <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
-                                <div class=" d-flex justify-content-center align-items-center">
-                                    <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
-                                    <span class="rechareamount">
-                                        {{$rechareamount}} tk
-                                    </span>
-                                </div>
-                                <p class="dashboard-card-topper-text text-center">Recharge Amount</p>
+
+                        <div class="card-body mx-auto text-center">
+                            <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
+                                <span class="rechareamount">
+                                    {{$rechareamount}} tk
+                                </span>
                             </div>
-                        </a>
+                            <p class="dashboard-card-topper-text text-center">Recharge Amount</p>
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="card mb-2 dashboard-card-topper">
-                        <a href="">
-                            <div class="card-body mx-auto text-center">
-                                <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
-                                <div class=" d-flex justify-content-center align-items-center">
-                                    <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
-                                    <span class="voiceamount">
-                                        {{$voiceamount}} tk
-                                    </span>
-                                </div>
-                                <p class="dashboard-card-topper-text text-center">Voice Amount</p>
+
+                        <div class="card-body mx-auto text-center">
+                            <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
+                                <span class="voiceamount">
+                                    {{$voiceamount}} tk
+                                </span>
                             </div>
-                        </a>
+                            <p class="dashboard-card-topper-text text-center">Voice Amount</p>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -105,10 +99,10 @@
             <form onsubmit="searchData(event)">
                 <div class="row d-flex justify-content-center">
                     <div class="col-md-2 col-6 p-md-0">
-                        <input type="date" name="dateFrom" class="form-control shadow-none" required/>
+                        <input type="date" name="dateFrom" class="form-control shadow-none" required />
                     </div>
                     <div class="col-md-2 col-6 p-md-0">
-                        <input type="date" name="dateTo" class="form-control shadow-none" required/>
+                        <input type="date" name="dateTo" class="form-control shadow-none" required />
                     </div>
                     <div class="col-md-1 col-12">
                         <button type="submit" class="btn btn-primary btn-sm shadow-none">Search</button>
@@ -311,8 +305,12 @@
                 $(".newsim").removeClass("d-none").html(newsim.length);
                 $(".appinstall").removeClass("d-none").html(appinstall.length);
                 $(".toffeegift").removeClass("d-none").html(toffeegift.length);
-                $(".rechareamount").removeClass("d-none").html(rechareamount.reduce((acc, pre) => {return acc + +parseFloat(pre.recharge_amount)},0)+' tk');
-                $(".voiceamount").removeClass("d-none").html(voiceamount.reduce((acc, pre) => {return acc + +parseFloat(pre.voice_amount)},0)+' tk');
+                $(".rechareamount").removeClass("d-none").html(rechareamount.reduce((acc, pre) => {
+                    return acc + +parseFloat(pre.recharge_amount)
+                }, 0) + ' tk');
+                $(".voiceamount").removeClass("d-none").html(voiceamount.reduce((acc, pre) => {
+                    return acc + +parseFloat(pre.voice_amount)
+                }, 0) + ' tk');
             },
             complete: () => {
                 $(".reload").addClass("d-none");
