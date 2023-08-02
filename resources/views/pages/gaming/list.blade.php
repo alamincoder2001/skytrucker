@@ -77,7 +77,7 @@
                                     <td>@{{ item.created_at | formatDateTime('DD-MM-YYYY h:mm A') }}</td>
                                     <td>@{{ item.name }}</td>
                                     <td>@{{ item.mobile }}</td>
-                                    <td>@{{ item.area.name }}</td>
+                                    <td>@{{ item.area == null ? 'n/a':item.area.name }}</td>
                                     <td>@{{ item.my_bl }}</td>
                                     <td>@{{ item.gift }}</td>
                                 </tr>
