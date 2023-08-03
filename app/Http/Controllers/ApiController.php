@@ -189,7 +189,7 @@ class ApiController extends Controller
     public function getData(Request $req)
     {
         $dateFrom = $req->dateFrom;
-        $dateTo = $req->dateTo;
+        $dateTo   = $req->dateTo;
 
         $dataLists = DataEntry::where('status', 'a')->with('area:id,name');
 
