@@ -34,6 +34,9 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     // Gaming api
     Route::post('/save_gaming', [ApiController::class, 'saveGaming']);
     Route::post('/get_gaming', [ApiController::class, 'getGaming']);
+
+    // counter api
+    Route::post('/get_total_data', [ApiController::class, 'getTotalData']);
     
 });
 

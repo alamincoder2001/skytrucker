@@ -22,7 +22,7 @@ class ApiController extends Controller
 
     public function register(Request $request)
     {
-    	//Validate data
+        //Validate data
         $data = $request->only('name', 'type', 'team_leader_id', 'username', 'password');
         $validator = Validator::make($data, [
             'name' => 'required|string',
@@ -38,13 +38,13 @@ class ApiController extends Controller
 
         //Request is valid, create new user
         $user = User::create([
-        	'name' => $request->name,
-        	// 'email' => $request->email,
-        	'type' => $request->type,
-        	'username' => $request->username,
-        	'team_leader_id' => $request->team_leader_id,
-        	'status' => 'a',
-        	'password' => bcrypt($request->password)
+            'name' => $request->name,
+            // 'email' => $request->email,
+            'type' => $request->type,
+            'username' => $request->username,
+            'team_leader_id' => $request->team_leader_id,
+            'status' => 'a',
+            'password' => bcrypt($request->password)
         ]);
 
         //User created, return success response
@@ -100,32 +100,32 @@ class ApiController extends Controller
 
         // User is within 2 kilometer of the target location
         // if ($distance <= 2.0) {
-            //Request is validated
-            try {
-                if (! $token = JWTAuth::attempt($credentials)) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Login credentials are invalid.',
-                    ], 400);
-                }
-            } catch (JWTException $e) {
-                // return $credentials;
+        //Request is validated
+        try {
+            if (!$token = JWTAuth::attempt($credentials)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Could not create token.',
-                ], 500);
+                    'message' => 'Login credentials are invalid.',
+                ], 400);
             }
-
-            $user->latitude = $userLocationInfo->latitude;
-            $user->longitude = $userLocationInfo->longitude;
-            $user->save();
-        
-            //Token created, return with success response and jwt token
+        } catch (JWTException $e) {
+            // return $credentials;
             return response()->json([
-                'success' => true,
-                'token' => $token,
-                'user' => $user,
-            ]);
+                'success' => false,
+                'message' => 'Could not create token.',
+            ], 500);
+        }
+
+        $user->latitude = $userLocationInfo->latitude;
+        $user->longitude = $userLocationInfo->longitude;
+        $user->save();
+
+        //Token created, return with success response and jwt token
+        return response()->json([
+            'success' => true,
+            'token' => $token,
+            'user' => $user,
+        ]);
         // } else {
         //     // User is not at the target location
         //     return response()->json([
@@ -147,7 +147,7 @@ class ApiController extends Controller
             return response()->json(['error' => $validator->errors()], 200);
         }
 
-		//Request is validated, do logout        
+        //Request is validated, do logout        
         try {
             $user = User::find($request->id);
             $user->latitude = null;
@@ -155,7 +155,7 @@ class ApiController extends Controller
             $user->save();
 
             JWTAuth::invalidate($request->token);
- 
+
             return response()->json([
                 'success' => true,
                 'message' => 'User has been logged out'
@@ -173,51 +173,99 @@ class ApiController extends Controller
         $this->validate($request, [
             'token' => 'required'
         ]);
- 
+
         $user = JWTAuth::authenticate($request->token);
- 
+
         return response()->json(['user' => $user]);
     }
 
-    public function getAreas() 
+    public function getAreas()
     {
         $areas = Area::where('status', 'a')->get();
 
         return response()->json(['areas' => $areas], 200);
     }
 
-    public function getData(Request $req) 
+    public function getData(Request $req)
     {
         $dateFrom = $req->dateFrom;
         $dateTo = $req->dateTo;
 
         $dataLists = DataEntry::where('status', 'a')->with('area:id,name');
 
-        if(isset($req->userId) && $req->userId != '') {
+        if (isset($req->userId) && $req->userId != '') {
             $dataLists = $dataLists->where('added_by', $req->userId);
         }
 
-        if(isset($req->areaId) && $req->areaId != '') {
+        if (isset($req->areaId) && $req->areaId != '') {
             $dataLists = $dataLists->where('area_id', $req->areaId);
         }
 
-        if(isset($req->bpId) && $req->bpId != '') {
+        if (isset($req->bpId) && $req->bpId != '') {
             $dataLists = $dataLists->where('added_by', $req->bpId);
         }
 
-        if(isset($req->leaderId) && $req->leaderId != '') {
-            $dataLists = $dataLists->whereHas('user', function($q) use($req) {
+        if (isset($req->leaderId) && $req->leaderId != '') {
+            $dataLists = $dataLists->whereHas('user', function ($q) use ($req) {
                 $q->where('team_leader_id', $req->leaderId);
             });
         }
 
-        if(isset($dateFrom) && $dateFrom != '' && isset($dateTo) && $dateTo != '') {
+        if (isset($dateFrom) && $dateFrom != '' && isset($dateTo) && $dateTo != '') {
             $dataLists = $dataLists->whereBetween('created_at', [$dateFrom . " 00:00:00", $dateTo . " 23:59:59"]);
         }
 
         $dataLists = $dataLists->latest()->get();
 
         return response()->json(['dataLists' => $dataLists], 200);
+    }
+
+    public function getTotalData(Request $req)
+    {
+        $dateFrom = $req->dateFrom;
+        $dateTo = $req->dateTo;
+
+        $dataLists = DataEntry::where('status', 'a')->with('area:id,name');
+
+        if (isset($req->userId) && $req->userId != '') {
+            $dataLists = $dataLists->where('added_by', $req->userId);
+        }
+
+        if (isset($req->areaId) && $req->areaId != '') {
+            $dataLists = $dataLists->where('area_id', $req->areaId);
+        }
+
+        if (isset($req->bpId) && $req->bpId != '') {
+            $dataLists = $dataLists->where('added_by', $req->bpId);
+        }
+
+        if (isset($req->leaderId) && $req->leaderId != '') {
+            $dataLists = $dataLists->whereHas('user', function ($q) use ($req) {
+                $q->where('team_leader_id', $req->leaderId);
+            });
+        }
+
+        if (isset($dateFrom) && $dateFrom != '' && isset($dateTo) && $dateTo != '') {
+            $dataLists = $dataLists->whereBetween('created_at', [$dateFrom . " 00:00:00", $dateTo . " 23:59:59"]);
+        }
+
+
+        $newsim = $dataLists->where('new_sim', 'yes')->latest()->get();
+        $appinstall = $dataLists->where('app_install', 'yes')->latest()->get();
+        $toffeegift = $dataLists->where('toffee_gift', 'yes')->latest()->get();
+        $rechareamount = $dataLists->where('recharge_package', 'yes')->sum('recharge_amount');
+        $voiceamount = $dataLists->where('voice', 'yes')->sum('voice_amount');
+
+
+        $res = [
+            'newsim'        => count($newsim),
+            'appinstall'    => count($appinstall),
+            'toffeegift'    => count($toffeegift),
+            'rechareamount' => $rechareamount,
+            'voiceamount'   => $voiceamount,
+        ];
+
+        return response()->json($res, 200);
     }
 
     public function sendOtp($name, $mobile, $code)
@@ -227,10 +275,10 @@ class ApiController extends Controller
         return $res;
     }
 
-    public function dataStore(Request $request) 
+    public function dataStore(Request $request)
     {
         try {
-            
+
             $validator = Validator::make($request->all(), [
                 'name' => 'required|min:3|string',
                 'mobile' => 'required|min:11',
@@ -250,7 +298,7 @@ class ApiController extends Controller
             }
 
             $exitsCheck = DataEntry::where('mobile', $request->mobile)->where('status', 'a')->first();
-            if($exitsCheck) {
+            if ($exitsCheck) {
                 return response()->json(['error' => "The Mobile number already exit our record!"]);
             }
 
@@ -258,7 +306,7 @@ class ApiController extends Controller
             $data = new DataEntry();
 
             $dataKeys = $request->except('image');
-            foreach($dataKeys as $key => $item) {
+            foreach ($dataKeys as $key => $item) {
                 $data->$key = $request->$key;
             }
 
@@ -270,19 +318,18 @@ class ApiController extends Controller
             $data->save();
             // $this->sendOtp($data->name, $data->mobile, $code);
             return response()->json(['message' => "Data Successfully Saved!", 'mobile' => $data->mobile, 'otpCode' => $code], 201);
-
         } catch (\Exception $e) {
             return response()->json(['message' => "Opps! something went wrong"], 400);
         }
     }
 
-    public function phoneVerifyProcess(Request $req) 
+    public function phoneVerifyProcess(Request $req)
     {
         try {
 
             $validator = Validator::make($req->all(), [
                 'code' => 'required|min:4|max:4'
-            ],[
+            ], [
                 'code.min' => 'The code must be at least 4 digits.',
                 'code.max' => 'The code may not be greater than 4 digits.'
             ]);
@@ -299,11 +346,9 @@ class ApiController extends Controller
                 $data->save();
 
                 return response()->json(['message' => "Data Successfully Verified."], 200);
-                
             } else {
                 return response()->json(['error' => "The OTP code is incorrect."], 422);
             }
-
         } catch (\Exception $e) {
             return response()->json(['message' => "Opps! something went wrong"], 400);
         }
@@ -313,8 +358,7 @@ class ApiController extends Controller
     {
         $users = User::where('status', 'a');
 
-        if(isset($req->userType) && $req->userType != '')
-        {
+        if (isset($req->userType) && $req->userType != '') {
             $users = $users->where('type', $req->userType);
         }
 
@@ -343,7 +387,6 @@ class ApiController extends Controller
             $picture->added_by = $req->added_by;
             $picture->save();
             return response()->json(['message' => "Picture Added successful."], 201);
-
         } catch (\Exception $ex) {
             return response()->json(['message' => "Opps! something went wrong"], 400);
         }
@@ -358,15 +401,15 @@ class ApiController extends Controller
 
         $pictures = Picture::with('user:id,name')->where('status', 'a');
 
-        if($curUserType != 'admin') {
+        if ($curUserType != 'admin') {
             $pictures = $pictures->where('added_by', $curUserId);
         }
-        
-        if(isset($req->userId) && $req->userId  != '') {
+
+        if (isset($req->userId) && $req->userId  != '') {
             $pictures = $pictures->where('added_by', $req->userId);
         }
 
-        if(isset($dateForm) && $dateForm != '' && isset($dateTo) && $dateTo != '') {
+        if (isset($dateForm) && $dateForm != '' && isset($dateTo) && $dateTo != '') {
             $pictures = $pictures->whereBetween('created_at', [$dateForm . " 00:00:00", $dateTo . " 23:59:59"]);
         }
 
@@ -374,7 +417,7 @@ class ApiController extends Controller
 
         return response()->json(['pictures' => $pictures], 200);
     }
-    
+
     public function saveGaming(Request $req)
     {
         try {
@@ -400,7 +443,6 @@ class ApiController extends Controller
             $gaming->added_by = $req->added_by;
             $gaming->save();
             return response()->json(['message' => "Gaming Added successful."], 201);
-
         } catch (\Exception $ex) {
             return response()->json(['message' => "Opps! something went wrong"], 400);
         }
@@ -415,15 +457,15 @@ class ApiController extends Controller
 
         $gaming = Gaming::with('area:id,name')->where('status', 'a');
 
-        if($curUserType != 'admin') {
+        if ($curUserType != 'admin') {
             $gaming = $gaming->where('added_by', $curUserId);
         }
-        
-        if(isset($req->areaId) && $req->areaId  != '') {
+
+        if (isset($req->areaId) && $req->areaId  != '') {
             $gaming = $gaming->where('area_id', $req->areaId);
         }
 
-        if(isset($dateForm) && $dateForm != '' && isset($dateTo) && $dateTo != '') {
+        if (isset($dateForm) && $dateForm != '' && isset($dateTo) && $dateTo != '') {
             $gaming = $gaming->whereBetween('created_at', [$dateForm . " 00:00:00", $dateTo . " 23:59:59"]);
         }
 
