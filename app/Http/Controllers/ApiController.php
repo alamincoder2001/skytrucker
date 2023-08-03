@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use App\Utils;
 use App\Models\Area;
 use App\Models\User;
+use App\Models\Gaming;
 use App\Models\Picture;
 use App\Models\DataEntry;
-use App\Models\Gaming;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Stevebauman\Location\Facades\Location;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpFoundation\Response;
-use Stevebauman\Location\Facades\Location;
 
 class ApiController extends Controller
 {
@@ -222,33 +222,29 @@ class ApiController extends Controller
 
     public function getTotalData(Request $req)
     {
+
         $dateFrom = $req->dateFrom;
         $dateTo = $req->dateTo;
-
         $dataLists = DataEntry::where('status', 'a')->with('area:id,name');
 
-        if (isset($req->userId) && $req->userId != '') {
-            $dataLists = $dataLists->where('added_by', $req->userId);
+        if (Auth::user()->type == 'bp') {
+            $dataLists = $dataLists->where('added_by', Auth::user()->id);
+        }else if(Auth::user()->type == 'team_leader'){
+            $dataLists = $dataLists->whereHas('user', function ($q) {
+                $q->where('team_leader_id', Auth::user()->id);
+            });
+        }else if(Auth::user()->type == 'admin'){
+        }else{
+            $dataLists = $dataLists->where('added_by', Auth::user()->id);
         }
 
         if (isset($req->areaId) && $req->areaId != '') {
             $dataLists = $dataLists->where('area_id', $req->areaId);
         }
 
-        if (isset($req->bpId) && $req->bpId != '') {
-            $dataLists = $dataLists->where('added_by', $req->bpId);
-        }
-
-        if (isset($req->leaderId) && $req->leaderId != '') {
-            $dataLists = $dataLists->whereHas('user', function ($q) use ($req) {
-                $q->where('team_leader_id', $req->leaderId);
-            });
-        }
-
         if (isset($dateFrom) && $dateFrom != '' && isset($dateTo) && $dateTo != '') {
             $dataLists = $dataLists->whereBetween('created_at', [$dateFrom . " 00:00:00", $dateTo . " 23:59:59"]);
         }
-
 
         $newsim = $dataLists->where('new_sim', 'yes')->latest()->get();
         $appinstall = $dataLists->where('app_install', 'yes')->latest()->get();

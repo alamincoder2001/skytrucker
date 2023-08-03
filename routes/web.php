@@ -51,6 +51,7 @@ Route::group(['middleware' => 'auth'], function() {
     Route::post('/data_list', [DataEntryController::class, 'getDataList']);
     Route::post('/phone_verify_process', [DataEntryController::class, 'phoneVerifyProcess']);
     Route::get('/data/export/{dateFrom}/{dateTo}/{areaId?}/{leaderId?}/{bpId?}', [DataEntryController::class, 'dataExport'])->name('data.export');
+    Route::post('/total_data_list', [DataEntryController::class, 'getTotalDataList']);
 
     // reports
     Route::get('/data/areawise-datalist', [DataEntryController::class, 'areawiseDataList'])->name('data.areawisedataList');

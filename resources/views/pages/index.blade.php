@@ -25,7 +25,7 @@
                             <div class="d-flex justify-content-center align-items-center">
                                 <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
                                 <span class="newsim">
-                                    {{$newsim}}
+                                    0
                                 </span>
                             </div>
                             <p class="dashboard-card-topper-text text-center">New Sim</p>
@@ -39,7 +39,7 @@
                             <div class=" d-flex justify-content-center align-items-center">
                                 <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
                                 <span class="appinstall">
-                                    {{$appinstall}}
+                                    0
                                 </span>
                             </div>
                             <p class="dashboard-card-topper-text text-center">App Install</p>
@@ -53,7 +53,7 @@
                             <div class=" d-flex justify-content-center align-items-center">
                                 <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
                                 <span class="toffeegift">
-                                    {{$toffeegift}}
+                                    0
                                 </span>
                             </div>
                             <p class="dashboard-card-topper-text text-center">Toffee Gift</p>
@@ -68,7 +68,7 @@
                             <div class=" d-flex justify-content-center align-items-center">
                                 <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
                                 <span class="rechareamount">
-                                    {{$rechareamount}} tk
+                                    0 tk
                                 </span>
                             </div>
                             <p class="dashboard-card-topper-text text-center">Recharge Amount</p>
@@ -84,7 +84,7 @@
                             <div class=" d-flex justify-content-center align-items-center">
                                 <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
                                 <span class="voiceamount">
-                                    {{$voiceamount}} tk
+                                    0 tk
                                 </span>
                             </div>
                             <p class="dashboard-card-topper-text text-center">Voice Amount</p>
@@ -96,20 +96,17 @@
         </div>
 
         <div class="col-12">
-            <form onsubmit="searchData(event)">
-                <div class="row d-flex justify-content-center">
-                    <div class="col-md-2 col-6 p-md-0">
-                        <input type="date" name="dateFrom" class="form-control shadow-none" required />
-                    </div>
-                    <div class="col-md-2 col-6 p-md-0">
-                        <input type="date" name="dateTo" class="form-control shadow-none" required />
-                    </div>
-                    <div class="col-md-1 col-12">
-                        <button type="submit" class="btn btn-primary btn-sm shadow-none">Search</button>
-                    </div>
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-2 col-6 p-md-0">
+                    <input type="date" id="dateFrom" name="dateFrom" class="form-control shadow-none" required />
                 </div>
-            </form>
-
+                <div class="col-md-2 col-6 p-md-0">
+                    <input type="date" id="dateTo" name="dateTo" class="form-control shadow-none" required />
+                </div>
+                <div class="col-md-1 col-12">
+                    <button type="button" class="btn btn-primary btn-sm shadow-none" onclick="searchData()">Search</button>
+                </div>
+            </div>
             <hr>
         </div>
 
@@ -277,16 +274,25 @@
         WshShell.Run("C:/windows/system32/calc.exe", 1, false);
     }
 
-    function searchData(event) {
-        event.preventDefault();
-
-        let formdata = new FormData(event.target);
+    function searchData() {
+        let data = {
+            dateFrom: $('#dateFrom').val(),
+            dateTo: $('#dateTo').val(),
+        }
+        if ($('#dateFrom').val() != '' || $('#dateTo').val() != '') {
+            if ($('#dateFrom').val() == '') {
+                $('#dateFrom').focus()
+                return
+            }
+            if ($('#dateTo').val() == '') {
+                $('#dateTo').focus()
+                return
+            }
+        }
         $.ajax({
-            url: "/data_list",
+            url: "/total_data_list",
             method: "POST",
-            data: formdata,
-            contentType: false,
-            processData: false,
+            data: data,
             beforeSend: () => {
                 $(".reload").removeClass("d-none");
                 $(".newsim").addClass("d-none");
@@ -296,27 +302,19 @@
                 $(".voiceamount").addClass("d-none");
             },
             success: res => {
-                let newsim = res.dataLists.filter(data => data.new_sim == 'yes');
-                let appinstall = res.dataLists.filter(data => data.app_install == 'yes');
-                let toffeegift = res.dataLists.filter(data => data.toffee_gift == 'yes');
-                let rechareamount = res.dataLists.filter(data => data.recharge_package == 'yes');
-                let voiceamount = res.dataLists.filter(data => data.voice == 'yes' && data.voice_amount != null);
-
-                $(".newsim").removeClass("d-none").html(newsim.length);
-                $(".appinstall").removeClass("d-none").html(appinstall.length);
-                $(".toffeegift").removeClass("d-none").html(toffeegift.length);
-                $(".rechareamount").removeClass("d-none").html(rechareamount.reduce((acc, pre) => {
-                    return acc + +parseFloat(pre.recharge_amount)
-                }, 0) + ' tk');
-                $(".voiceamount").removeClass("d-none").html(voiceamount.reduce((acc, pre) => {
-                    return acc + +parseFloat(pre.voice_amount)
-                }, 0) + ' tk');
+                $(".newsim").removeClass("d-none").html(res.newsim);
+                $(".appinstall").removeClass("d-none").html(res.appinstall);
+                $(".toffeegift").removeClass("d-none").html(res.toffeegift);
+                $(".rechareamount").removeClass("d-none").html(res.rechareamount + ' tk');
+                $(".voiceamount").removeClass("d-none").html(res.voiceamount + ' tk');
             },
             complete: () => {
                 $(".reload").addClass("d-none");
             }
         })
     }
+
+    searchData();
 </script>
 
 @endpush

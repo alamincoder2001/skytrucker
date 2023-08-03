@@ -26,10 +26,10 @@ class DataEntryController extends Controller
         return $res;
     }
 
-    public function store(Request $request) 
+    public function store(Request $request)
     {
         try {
-            
+
             $validator = Validator::make($request->all(), [
                 'name' => 'required|min:3|string',
                 'mobile' => 'required|min:11',
@@ -50,7 +50,7 @@ class DataEntryController extends Controller
 
             $exitsCheck = DataEntry::where('mobile', $request->mobile)->where('status', 'a')->first();
 
-            if($exitsCheck) {
+            if ($exitsCheck) {
                 return response()->json(['error' => "The Mobile number already exit our record!"]);
             }
 
@@ -59,7 +59,7 @@ class DataEntryController extends Controller
             $data = new DataEntry();
 
             $dataKeys = $request->except('image');
-            foreach($dataKeys as $key => $item) {
+            foreach ($dataKeys as $key => $item) {
                 $data->$key = $request->$key;
             }
 
@@ -72,19 +72,18 @@ class DataEntryController extends Controller
             // $this->sendOtp($data->name, $data->mobile, $code);
             // session(['verification_code' => $code]);
             return response()->json(['message' => "Data Successfully Saved!", 'mobile' => $data->mobile], 201);
-
         } catch (\Exception $e) {
             return response()->json(['message' => "Opps! something went wrong"], 400);
         }
     }
 
-    public function phoneVerifyProcess(Request $req) 
+    public function phoneVerifyProcess(Request $req)
     {
         try {
 
             $validator = Validator::make($req->all(), [
                 'code' => 'required|min:4|max:4'
-            ],[
+            ], [
                 'code.min' => 'The code must be at least 4 digits.',
                 'code.max' => 'The code may not be greater than 4 digits.'
             ]);
@@ -97,8 +96,8 @@ class DataEntryController extends Controller
 
             //code...
             $verificationCode = session('verification_code');
-    
-            if(isset($verificationCode)) {
+
+            if (isset($verificationCode)) {
                 if ($verificationCode == $req->code) {
                     $data = DataEntry::where('otp', $req->code)->where('status', 'p')->first();
                     $data->status = 'a';
@@ -106,7 +105,6 @@ class DataEntryController extends Controller
 
                     session()->forget(['verification_code']);
                     return response()->json(['message' => "Data Successfully Verified."], 201);
-                    
                 } else {
                     return response()->json(['error' => "The verification code was incorrect."]);
                 }
@@ -118,25 +116,24 @@ class DataEntryController extends Controller
 
     public function update(Request $request)
     {
-        
     }
 
-    public function dataList() 
+    public function dataList()
     {
         return view('pages.data.list');
     }
 
-    public function areawiseDataList() 
+    public function areawiseDataList()
     {
         return view('pages.data.areawiselist');
     }
 
-    public function teamleaderwisedataList() 
+    public function teamleaderwisedataList()
     {
         return view('pages.data.teamleaderwiselist');
     }
 
-    public function bpwisedataList() 
+    public function bpwisedataList()
     {
         return view('pages.data.bpwiselist');
     }
@@ -148,25 +145,25 @@ class DataEntryController extends Controller
 
         $dataLists = DataEntry::where('status', 'a')->with('area');
 
-        if(Auth::user()->type == 'bp') {
+        if (Auth::user()->type == 'bp') {
             $dataLists = $dataLists->where('added_by', Auth::user()->id);
         }
 
-        if(isset($request->areaId) && $request->areaId != '') {
+        if (isset($request->areaId) && $request->areaId != '') {
             $dataLists = $dataLists->where('area_id', $request->areaId);
         }
 
-        if(isset($request->bpId) && $request->bpId != '') {
+        if (isset($request->bpId) && $request->bpId != '') {
             $dataLists = $dataLists->where('added_by', $request->bpId);
         }
 
-        if(isset($request->leaderId) && $request->leaderId != '') {
-            $dataLists = $dataLists->whereHas('user', function($q) use($request) {
+        if (isset($request->leaderId) && $request->leaderId != '') {
+            $dataLists = $dataLists->whereHas('user', function ($q) use ($request) {
                 $q->where('team_leader_id', $request->leaderId);
             });
         }
 
-        if(isset($dateForm) && $dateForm != '' && isset($dateTo) && $dateTo != '') {
+        if (isset($dateForm) && $dateForm != '' && isset($dateTo) && $dateTo != '') {
             $dataLists = $dataLists->whereBetween('created_at', [$dateForm . " 00:00:00", $dateTo . " 23:59:59"]);
         }
 
@@ -175,13 +172,13 @@ class DataEntryController extends Controller
         return response()->json(['dataLists' => $dataLists], 200);
     }
 
-    public function dataExport($dateForm, $dateTo, $areaId=0, $leaderId=0, $bpId=0) 
+    public function dataExport($dateForm, $dateTo, $areaId = 0, $leaderId = 0, $bpId = 0)
     {
-        $filename = $dateForm.'-'.$dateTo.'-'.time().'-datalist.xlsx';
+        $filename = $dateForm . '-' . $dateTo . '-' . time() . '-datalist.xlsx';
         return (new DataEntryExport)->dataclause($dateForm, $dateTo, $areaId, $leaderId, $bpId)->download($filename);
     }
 
-    public function takePicture() 
+    public function takePicture()
     {
         return view('pages.picture.index');
     }
@@ -206,7 +203,6 @@ class DataEntryController extends Controller
             $picture->added_by = Auth::user()->id;
             $picture->save();
             return response()->json(['message' => "Picture Added successful."], 201);
-
         } catch (\Exception $ex) {
             return response()->json(['message' => "Opps! something went wrong"], 400);
         }
@@ -221,22 +217,21 @@ class DataEntryController extends Controller
 
         $pictures = Picture::with('user:id,name')->where('status', 'a');
 
-        if($curUserType != 'admin') {
+        if ($curUserType != 'admin') {
             $pictures = $pictures->where('added_by', $curUserId);
         }
-        
-        if(isset($req->userId) && $req->userId  != '') {
+
+        if (isset($req->userId) && $req->userId  != '') {
             $pictures = $pictures->where('added_by', $req->userId);
         }
 
-        if(isset($dateForm) && $dateForm != '' && isset($dateTo) && $dateTo != '') {
+        if (isset($dateForm) && $dateForm != '' && isset($dateTo) && $dateTo != '') {
             $pictures = $pictures->whereBetween('created_at', [$dateForm . " 00:00:00", $dateTo . " 23:59:59"]);
         }
 
         $pictures = $pictures->latest()->get();
 
         return response()->json(['pictures' => $pictures], 200);
-
     }
 
     public function pictureList()
@@ -255,9 +250,53 @@ class DataEntryController extends Controller
             $picture->status = 'd';
             $picture->save();
             $picture->delete();
-            return response()->json(['message' => "Picture Delete successful."],201);
+            return response()->json(['message' => "Picture Delete successful."], 201);
         } catch (\Exception $e) {
             return response()->json(['message' => "Opps! something went wrong"], 400);
         }
+    }
+
+    public function getTotalDataList(Request $req)
+    {
+        $dateFrom = $req->dateFrom;
+        $dateTo = $req->dateTo;
+        $dataLists = DataEntry::where('status', 'a')->with('area:id,name');
+
+        if (Auth::user()->type == 'bp') {
+            $dataLists = $dataLists->where('added_by', Auth::user()->id);
+        }else if(Auth::user()->type == 'team_leader'){
+            $dataLists = $dataLists->whereHas('user', function ($q) {
+                $q->where('team_leader_id', Auth::user()->id);
+            });
+        }else if(Auth::user()->type == 'admin'){
+        }else{
+            $dataLists = $dataLists->where('added_by', Auth::user()->id);
+        }
+
+        if (isset($req->areaId) && $req->areaId != '') {
+            $dataLists = $dataLists->where('area_id', $req->areaId);
+        }
+
+        if (isset($dateFrom) && $dateFrom != '' && isset($dateTo) && $dateTo != '') {
+            $dataLists = $dataLists->whereBetween('created_at', [$dateFrom . " 00:00:00", $dateTo . " 23:59:59"]);
+        }
+
+
+        $newsim = $dataLists->where('new_sim', 'yes')->latest()->get();
+        $appinstall = $dataLists->where('app_install', 'yes')->latest()->get();
+        $toffeegift = $dataLists->where('toffee_gift', 'yes')->latest()->get();
+        $rechareamount = $dataLists->where('recharge_package', 'yes')->sum('recharge_amount');
+        $voiceamount = $dataLists->where('voice', 'yes')->sum('voice_amount');
+
+
+        $res = [
+            'newsim'        => count($newsim),
+            'appinstall'    => count($appinstall),
+            'toffeegift'    => count($toffeegift),
+            'rechareamount' => $rechareamount,
+            'voiceamount'   => $voiceamount,
+        ];
+
+        return response()->json($res, 200);
     }
 }
