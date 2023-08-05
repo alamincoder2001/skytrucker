@@ -7,7 +7,9 @@ use App\Models\Picture;
 use App\Models\DataEntry;
 use Illuminate\Http\Request;
 use App\Exports\DataEntryExport;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class DataEntryController extends Controller
@@ -31,14 +33,15 @@ class DataEntryController extends Controller
         try {
 
             $validator = Validator::make($request->all(), [
-                'name' => 'required|min:3|string',
-                'mobile' => 'required|min:11',
-                'new_sim' => 'required',
-                'app_install' => 'required',
-                'toffee' => 'required',
-                'sell_package' => 'required',
+                'name'             => 'required|min:3|string',
+                'mobile'           => 'required|min:11',
+                'new_sim'          => 'required',
+                'bip_app_install'  => 'required',
+                'app_install'      => 'required',
+                'toffee'           => 'required',
+                'sell_package'     => 'required',
                 'recharge_package' => 'required',
-                'area_id' => 'required',
+                'area_id'          => 'required',
                 // 'image' => 'mimes:jpg,png,jpeg,bmp'
             ]);
 
@@ -260,40 +263,67 @@ class DataEntryController extends Controller
     {
         $dateFrom = $req->dateFrom;
         $dateTo = $req->dateTo;
-        $dataLists = DataEntry::where('status', 'a')->with('area:id,name');
-
-        if (Auth::user()->type == 'bp') {
-            $dataLists = $dataLists->where('added_by', Auth::user()->id);
-        }else if(Auth::user()->type == 'team_leader'){
-            $dataLists = $dataLists->whereHas('user', function ($q) {
-                $q->where('team_leader_id', Auth::user()->id);
-            });
-        }else if(Auth::user()->type == 'admin'){
-        }else{
-            $dataLists = $dataLists->where('added_by', Auth::user()->id);
-        }
-
-        if (isset($req->areaId) && $req->areaId != '') {
-            $dataLists = $dataLists->where('area_id', $req->areaId);
-        }
+        $id = Auth::user()->id;
+        $clauses = "";
 
         if (isset($dateFrom) && $dateFrom != '' && isset($dateTo) && $dateTo != '') {
-            $dataLists = $dataLists->whereBetween('created_at', [$dateFrom . " 00:00:00", $dateTo . " 23:59:59"]);
+            $clauses .= " AND date(de.created_at) BETWEEN '$dateFrom' AND '$dateTo'";
+        }
+        if (Auth::user()->type == 'bp') {
+            $clauses .= " AND de.added_by = '$id'";
+            $dataLists = DB::select("SELECT * FROM data_entries de WHERE de.status ='a' $clauses");
+        } else if (Auth::user()->type == 'team_leader') {
+            $users = User::where('team_leader_id', $id)->get();
+            $dataLists = [];
+            foreach ($users as $value) {
+                $datas = DB::select("SELECT * FROM data_entries de WHERE de.status ='a' AND de.added_by = '$value->id' $clauses");
+                foreach ($datas as $key => $val) {
+                    $dataLists[$key] = $val;
+                }
+            }
+        } else if (Auth::user()->type == 'admin') {
+            $dataLists = DB::select("SELECT * FROM data_entries de WHERE de.status ='a' $clauses");
+        } else {
+            $clauses .= " AND de.added_by = '$id'";
+            $dataLists = DB::select("SELECT * FROM data_entries de WHERE de.status ='a' $clauses");
         }
 
+        $newsim = array_filter($dataLists, function ($row) {
+            return $row->new_sim == 'yes';
+        });
+        $appinstall = array_filter($dataLists, function ($row) {
+            return $row->app_install == 'yes';
+        });
+        $bipappinstall = array_filter($dataLists, function ($row) {
+            return $row->bip_app_install == 'yes';
+        });
+        $toffeegift = array_filter($dataLists, function ($row) {
+            return $row->toffee_gift == 'yes';
+        });
 
-        $newsim = $dataLists->where('new_sim', 'yes')->latest()->get();
-        $appinstall = $dataLists->where('app_install', 'yes')->latest()->get();
-        $toffeegift = $dataLists->where('toffee_gift', 'yes')->latest()->get();
-        $rechareamount = $dataLists->where('recharge_package', 'yes')->sum('recharge_amount');
-        $voiceamount = $dataLists->where('voice', 'yes')->sum('voice_amount');
+        $recharge = array_filter($dataLists, function ($row) {
+            return $row->recharge_package == 'yes';
+        });
+
+        $rechargeamount = array_sum(array_map(function ($data) {
+            return $data->recharge_amount;
+        }, $recharge));
+
+        $voice = array_filter($dataLists, function ($row) {
+            return $row->voice == 'yes';
+        });
+
+        $voiceamount = array_sum(array_map(function ($data) {
+            return $data->voice_amount;
+        }, $voice));
 
 
         $res = [
             'newsim'        => count($newsim),
             'appinstall'    => count($appinstall),
+            'bipappinstall' => count($bipappinstall),
             'toffeegift'    => count($toffeegift),
-            'rechareamount' => $rechareamount,
+            'rechargeamount' => $rechargeamount,
             'voiceamount'   => $voiceamount,
         ];
 

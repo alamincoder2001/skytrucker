@@ -65,6 +65,8 @@
                                     <th>Gift</th>
                                     <th>BL App</th>
                                     <th>Gift</th>
+                                    <th>Bip App</th>
+                                    <th>Gift</th>
                                     <th>Toffee</th>
                                     <th>Gift</th>
                                     <th>Sell Package</th>
@@ -92,6 +94,11 @@
                                         <span class="badge bg-danger" v-else>No</span>
                                     </td>
                                     <td>@{{ item.app_install_gift ?? '--' }}</td>
+                                    <td>
+                                        <span class="badge bg-success" v-if="item.bip_app_install == 'yes'">Yes</span>
+                                        <span class="badge bg-danger" v-else>No</span>
+                                    </td>
+                                    <td>@{{ item.bip_app_gift ?? '--' }}</td>
                                     <td>
                                         <span class="badge bg-success" v-if="item.toffee == 'yes'">Yes</span>
                                         <span class="badge bg-danger" v-else>No</span>

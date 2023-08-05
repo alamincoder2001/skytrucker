@@ -74,6 +74,28 @@
                                         </div>
                                     </div>
                                     <div class="form-group row pb-2">
+                                        <label class="col-md-4 col-6" for="blApp">Bip App Install?</label>
+                                        <div class="col-md-8 col-6">
+                                            <label for="bip_app_yes">
+                                                <input type="radio" v-model="data.bip_app_install" value="yes" id="bip_app_yes"> Yes
+                                            </label>&nbsp;&nbsp;&nbsp;
+                                            <label for="bip_app_no">
+                                                <input type="radio" v-model="data.bip_app_install" value="no" id="bip_app_no"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row pb-2" style="display: none;" :style="{ display: data.bip_app_install == 'yes' ? '' : 'none' }">
+                                        <label class="col-md-4 col-5" for="bip_app__gift">Gift Item?</label>
+                                        <div class="col-md-8 col-7">
+                                            <label for="bip_app_gift_yes">
+                                                <input type="radio" v-model="data.bip_app_gift" value="yes" id="bip_app_gift_yes"> Yes
+                                            </label>&nbsp;&nbsp;&nbsp;
+                                            <label for="bip_app_gift_no">
+                                                <input type="radio" v-model="data.bip_app_gift" value="no" id="bip_app_gift_no"> No
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row pb-2">
                                         <label class="col-md-4 col-6" for="toffee">Toffee App Install?</label>
                                         <div class="col-md-8 col-6">
                                             <label for="toffee_yes">
@@ -334,6 +356,8 @@
                         new_sim_gift: '',
                         app_install: '',
                         app_install_gift: '',
+                        bip_app_install: '',
+                        bip_app_gift: '',
                         toffee: '',
                         toffee_gift: '',
                         sell_package: '',

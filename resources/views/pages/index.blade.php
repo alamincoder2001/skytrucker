@@ -18,7 +18,7 @@
         @endphp
         <div class="col-12">
             <div class="row">
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-2 col-md-6">
                     <div class="card mb-2 dashboard-card-topper">
                         <div class="card-body mx-auto text-center">
                             <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
@@ -52,6 +52,20 @@
                             <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
                             <div class=" d-flex justify-content-center align-items-center">
                                 <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
+                                <span class="bipappinstall">
+                                    0
+                                </span>
+                            </div>
+                            <p class="dashboard-card-topper-text text-center">BipApp Install</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-2 col-md-6">
+                    <div class="card mb-2 dashboard-card-topper">
+                        <div class="card-body mx-auto text-center">
+                            <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
+                            <div class=" d-flex justify-content-center align-items-center">
+                                <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
                                 <span class="toffeegift">
                                     0
                                 </span>
@@ -67,7 +81,7 @@
                             <i class="fas fa-table" style="font-size: 30px;background: #1c8dff;padding: 7px;color: white;border-radius:50%;"></i>
                             <div class=" d-flex justify-content-center align-items-center">
                                 <img class="reload d-none" src="{{asset('loading.gif')}}" width="30">
-                                <span class="rechareamount">
+                                <span class="rechargeamount">
                                     0 tk
                                 </span>
                             </div>
@@ -76,7 +90,7 @@
 
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
+                <div class="col-xl-2 col-md-6">
                     <div class="card mb-2 dashboard-card-topper">
 
                         <div class="card-body mx-auto text-center">
@@ -297,15 +311,17 @@
                 $(".reload").removeClass("d-none");
                 $(".newsim").addClass("d-none");
                 $(".appinstall").addClass("d-none");
+                $(".bipappinstall").addClass("d-none");
                 $(".toffeegift").addClass("d-none");
-                $(".rechareamount").addClass("d-none");
+                $(".rechargeamount").addClass("d-none");
                 $(".voiceamount").addClass("d-none");
             },
             success: res => {
                 $(".newsim").removeClass("d-none").html(res.newsim);
                 $(".appinstall").removeClass("d-none").html(res.appinstall);
+                $(".bipappinstall").removeClass("d-none").html(res.bipappinstall);
                 $(".toffeegift").removeClass("d-none").html(res.toffeegift);
-                $(".rechareamount").removeClass("d-none").html(res.rechareamount + ' tk');
+                $(".rechargeamount").removeClass("d-none").html(res.rechargeamount + ' tk');
                 $(".voiceamount").removeClass("d-none").html(res.voiceamount + ' tk');
             },
             complete: () => {
